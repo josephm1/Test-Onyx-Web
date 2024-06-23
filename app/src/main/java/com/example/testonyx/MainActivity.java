@@ -25,6 +25,9 @@ import com.onyx.android.sdk.pen.RawInputCallback;
 import com.onyx.android.sdk.pen.TouchHelper;
 import com.onyx.android.sdk.pen.data.TouchPointList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -93,6 +96,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(mContext, "Quit Pen from WebView", Toast.LENGTH_SHORT).show();
         }
 
+        @JavascriptInterface
+        public void onStylusDataReceived(String stylusData) {
+            // Handle the received stylus data here (e.g., log or send to server)
+            Log.d("StylusData", stylusData);
+        }
     }
 
     private String readHtmlFile() {
@@ -125,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         binding.surfaceview.getSettings().setJavaScriptEnabled(true);
         binding.surfaceview.loadData(readHtmlFile(), "text/html", "utf-8");
+//        binding.surfaceview.loadUrl("http://127.0.0.1:5500/index.html");
         binding.surfaceview.post(new Runnable() {
             @Override
             public void run() {
@@ -186,7 +195,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onRawDrawingTouchPointMoveReceived(TouchPoint touchPoint) {
             Log.d(TAG, "onRawDrawingTouchPointMoveReceived");
             Log.d(TAG, touchPoint.getX() + ", " + touchPoint.getY());
+
+
+            // Convert touchpoint data to JSON string
+            String stylusData = convertTouchPointToJSON(touchPoint);
+
+            // Call the Javascript function to send data
+            binding.surfaceview.evaluateJavascript("android.onStylusDataReceived('" + stylusData + "')", null);
         }
+
+        private String convertTouchPointToJSON(TouchPoint touchPoint) {
+            // Implement your logic to convert TouchPoint data to a JSON string
+            // This example creates a simple JSON with x and y coordinates
+            JSONObject json = new JSONObject();
+            try {
+                json.put("x", touchPoint.getX());
+                json.put("y", touchPoint.getY());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return json.toString();
+        };
+
 
         @Override
         public void onRawDrawingTouchPointListReceived(TouchPointList touchPointList) {

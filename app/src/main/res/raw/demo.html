@@ -1,12 +1,30 @@
+<!DOCTYPE html>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   </head>
   <script language="javascript">
+
+
+function onStylusDataReceived(data) {
+      // Parse the received JSON data (replace with your logic)
+      const jsonData = JSON.parse(data);
+      const x = jsonData.x;
+      const y = jsonData.y;
+      
+      // Use the x and y coordinates to update the website content (e.g., draw on a canvas)
+      console.log("Stylus data received:", x, y);
+      // Implement your logic to visualize or process the data here
+    }
+
+    
       /* This function is invoked by the activity */
       function wave() {
           alert("Android calling Js");
       }
+
+                console.log('main.js test');
+
       function getBtns() {
          var btns = document.getElementsByTagName('button');
          var data = [];
@@ -23,7 +41,14 @@
          return JSON.stringify(data);
       }
   </script>
+    <style>
+        body{
+        background: white;
+    }
+    </style>
   <body>
+      <p>test 1</p>
+
       <!-- Js调用Android代码 -->
       <button onClick="javascript:android.testJsCallback();"><div style="width:80px;
           margin:0px auto;
@@ -33,5 +58,10 @@
               <img id="droid"/><br>
               Quit scribble!
       </div></button>
+
+
+      <script>
+          console.log('main.js test');
+      </script>
   </body>
 </html>
